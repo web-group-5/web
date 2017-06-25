@@ -13,14 +13,15 @@ import utils.AppException;
 import utils.DBUtil;
 
 public class UserDao {
+	
 	/**
-	 * 判断用户是否存在
+	 * 判断用户昵称是否存在
 	 * 
 	 * @param name User name
 	 * @return  Return true if there are users with same name,otherwise return false 
 	 * @throws AppException
 	 */
-	public boolean isExist(String nickname) throws AppException {
+	public boolean isExist_nickname(String nickname) throws AppException {
 		Connection conn = null; 
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
@@ -32,6 +33,42 @@ public class UserDao {
 
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, nickname);
+
+			rs = psmt.executeQuery();
+			if (rs.next()) {
+				flag = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new AppException(
+					"dao.UserDao.isExist");
+		} finally {
+			DBUtil.closeResultSet(rs);
+			DBUtil.closeStatement(psmt);
+			DBUtil.closeConnection(conn);
+		}
+		return flag;
+	}
+	
+	/**
+	 * 判断用户是否存在
+	 * 
+	 * @param name User name
+	 * @return  Return true if there are users with same name,otherwise return false 
+	 * @throws AppException
+	 */
+	public boolean isExist_account(String account) throws AppException {
+		Connection conn = null; 
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+
+		boolean flag = false;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select id from user where account = ?";
+
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, account);
 
 			rs = psmt.executeQuery();
 			if (rs.next()) {
@@ -64,16 +101,16 @@ public class UserDao {
 		try {
 			conn = DBUtil.getConnection();
 
-			String sql = "insert into user (nickname,account,login_password,pay_password,email)"
-					+ " values (?,?,?,?,?)";
+			String sql = "insert into user (account,login_password,pay_password)"
+					+ " values (?,?,?)";
 			
 			psmt = conn.prepareStatement(sql); 
 			
-			psmt.setString(1, user.getNickName());
-			psmt.setString(2, user.getAccount());
-			psmt.setString(3, user.getLogin_Password());
-			psmt.setString(4, user.getPay_Password());
-			psmt.setString(5, user.getEmail());
+			//psmt.setString(1, user.getNickName());
+			psmt.setString(1, user.getAccount());
+			psmt.setString(2, user.getLogin_Password());
+			psmt.setString(3, user.getPay_Password());
+			//psmt.setString(5, user.getEmail());
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {
@@ -172,6 +209,7 @@ public class UserDao {
 				user.setBirthday(rs.getDate("birthday"));
 				user.setEmail(rs.getString("email"));
 				user.setAddress(rs.getString("address"));
+				user.setIsShoper(rs.getBoolean("isShoper"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -182,6 +220,37 @@ public class UserDao {
 			DBUtil.closeConnection(conn);
 		}
 		return user;
+	}
+	
+	public int getBalanceById(int id) throws AppException {
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select balance"
+					+"from user"
+					+"where id = ?";
+			
+			psmt = conn.prepareStatement(sql);
+			
+			psmt.setInt(1, id);
+			
+			rs = psmt.executeQuery();
+			
+			
+			if (rs.next()) {
+				return rs.getInt("balance");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new AppException("dao.UserDao.getById");
+		} finally {
+			DBUtil.closeResultSet(rs);
+			DBUtil.closeStatement(psmt);
+			DBUtil.closeConnection(conn);
+		}
+		return -1;
 	}
 
 	/**
@@ -253,7 +322,7 @@ public class UserDao {
 			flag = psmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new AppException("dao.UserDao.UpdateUser");
+			throw new AppException("dao.UserDao.UpdateUserInfo");
 		} finally {
 			DBUtil.closeResultSet(rs);
 			DBUtil.closeStatement(psmt);
@@ -262,7 +331,14 @@ public class UserDao {
 		return true;
 	}
 	
-	public boolean UpdateLogin_Password(int id,String login_password) throws AppException {
+	/**
+	 * 更新登录密码
+	 * @param id
+	 * @param login_password
+	 * @return
+	 * @throws AppException
+	 */
+	public boolean UpdateLogin_Password(User user) throws AppException {
 		boolean flag = false;
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -274,13 +350,13 @@ public class UserDao {
 			
 			psmt = conn.prepareStatement(sql);
 			
-			psmt.setString(1, login_password);
-			psmt.setInt(2, id);
+			psmt.setString(1, user.getLogin_Password());
+			psmt.setInt(2, user.getId());
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new AppException("dao.UserDao.UpdateUser");
+			throw new AppException("dao.UserDao.UpdateLogin_Password");
 		} finally {
 			DBUtil.closeResultSet(rs);
 			DBUtil.closeStatement(psmt);
@@ -289,7 +365,7 @@ public class UserDao {
 		return true;
 	}
 	
-	public boolean UpdatePay_Password(int id,String pay_password) throws AppException {
+	public boolean UpdatePay_Password(User user) throws AppException {
 		boolean flag = false;
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -301,13 +377,13 @@ public class UserDao {
 			
 			psmt = conn.prepareStatement(sql);
 			
-			psmt.setString(1, pay_password);
-			psmt.setInt(2, id);
+			psmt.setString(1, user.getPay_Password());
+			psmt.setInt(2, user.getId());
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new AppException("dao.UserDao.UpdateUser");
+			throw new AppException("dao.UserDao.UpdatePay_Password");
 		} finally {
 			DBUtil.closeResultSet(rs);
 			DBUtil.closeStatement(psmt);
@@ -323,7 +399,7 @@ public class UserDao {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean Charge(int id,int money) throws AppException {
+	public boolean Charge(int id,float money) throws AppException {
 		boolean flag = false;
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -335,13 +411,13 @@ public class UserDao {
 			
 			psmt = conn.prepareStatement(sql);
 			
-			psmt.setInt(1, money);
+			psmt.setFloat(1, money);
 			psmt.setInt(2, id);
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new AppException("dao.UserDao.UpdateUser");
+			throw new AppException("dao.UserDao.Charge");
 		} finally {
 			DBUtil.closeResultSet(rs);
 			DBUtil.closeStatement(psmt);
@@ -357,7 +433,7 @@ public class UserDao {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean Expense(int id,int money) throws AppException {
+	public boolean Expense(int id,float money) throws AppException {
 		boolean flag = false;
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -369,53 +445,19 @@ public class UserDao {
 			
 			psmt = conn.prepareStatement(sql);
 			
-			psmt.setInt(1, money);
+			psmt.setFloat(1, money);
 			psmt.setInt(2, id);
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new AppException("dao.UserDao.UpdateUser");
+			throw new AppException("dao.UserDao.Expense");
 		} finally {
 			DBUtil.closeResultSet(rs);
 			DBUtil.closeStatement(psmt);
 			DBUtil.closeConnection(conn);
 		}
 		return true;
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws AppException
-	 */
-	public boolean JudgeUser(String nickname) throws AppException {
-		int status = 0;
-		 
-		Connection conn = null;
-		PreparedStatement psmt = null;
-		ResultSet rs = null;
-		try { 
-			conn = DBUtil.getConnection();
-            String sql = "select * from user where nickname = ?;";
-			
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, nickname);
-			
-			rs = psmt.executeQuery();
-			if(rs.next()) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new AppException("dao.UserDao.JudgeUser");
-		} finally {
-			DBUtil.closeResultSet(rs);
-			DBUtil.closeStatement(psmt);
-			DBUtil.closeConnection(conn);
-		}
-		return false;
 	}
 	
 	public boolean IsPay_Password(int id,String pay_password) throws AppException{
@@ -439,7 +481,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserDao.isExist");
+					"dao.UserDao.IsPay_Password");
 		} finally {
 			DBUtil.closeResultSet(rs);
 			DBUtil.closeStatement(psmt);
@@ -465,7 +507,7 @@ public class UserDao {
 			flag = psmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new AppException("dao.UserDao.UpdateUser");
+			throw new AppException("dao.UserDao.OpenShop");
 		} finally {
 			DBUtil.closeResultSet(rs);
 			DBUtil.closeStatement(psmt);

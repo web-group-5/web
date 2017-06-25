@@ -14,7 +14,7 @@ public class User {
 	private String phone;
 	private String email;
 	private String address;
-	private int balance;
+	private float balance;
 	private boolean isShoper;
 	
 	public User(){
@@ -124,11 +124,11 @@ public class User {
 		this.address=address;
 	}
 
-	public int getBalance(){
+	public float getBalance(){
 		return balance;
 	}
 	
-	public void setBalance(int balance){
+	public void setBalance(float balance){
 		this.balance=balance;
 	}
 	

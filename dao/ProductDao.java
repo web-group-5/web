@@ -143,7 +143,7 @@ public class ProductDao {
 			psmt.setInt(1, product.getShopId());
 			psmt.setString(2, product.getNum());
 			psmt.setString(3, product.getName());
-			psmt.setInt(4, product.getPrice());
+			psmt.setFloat(4, product.getPrice());
 			psmt.setString(5, product.getDescription());
 			psmt.setInt(6, product.getQuantity());
 			psmt.setInt(7, product.getVariety());

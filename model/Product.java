@@ -6,7 +6,7 @@ public class Product {
 	private String num;
 	private String name;
 	private String description;
-	private int price;
+	private float price;
 	private int quantity;
 	private int variety;
 	private boolean soldout;
@@ -65,11 +65,11 @@ public class Product {
 		this.description=description;
 	}
 	
-	public int getPrice(){
+	public float getPrice(){
 		return price;
 	}
 	
-	public void setPrice(int price){
+	public void setPrice(float price){
 		this.price=price;
 	}
 	
