@@ -88,7 +88,7 @@ public class UserDao {
 
 	/**
 	 * 添加用户
-	 * 
+	 * 需要属性：account,login_password
 	 * @param User object
 	 * @return Return true if saved successfully,otherwise return false
 	 * @throws AppException
@@ -306,7 +306,7 @@ public class UserDao {
 		try {
 			conn = DBUtil.getConnection();
 			String sql = "update user set name = ?,sex = ?,birthday = ?,phone = ?,"
-					+ "email = ?,address = ?"
+					+ "email = ?,address = ?,nickname=?"
 					+ "where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
@@ -317,7 +317,8 @@ public class UserDao {
 			psmt.setString(4, user.getPhone());
 			psmt.setString(5, user.getEmail());
 			psmt.setString(6, user.getAddress());
-			psmt.setInt(7, user.getId());
+			psmt.setString(7, user.getNickName());
+			psmt.setInt(8, user.getId());
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {

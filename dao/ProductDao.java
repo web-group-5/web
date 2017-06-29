@@ -450,4 +450,27 @@ public class ProductDao {
 		}
 		return ids;
 	}
+	
+	public void delCollection(int user_id,int product_id) throws AppException{
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "delete from collection"
+					+ "where user_id = ? and product_id = ?"; 
+			
+			psmt = conn.prepareStatement(sql);
+			
+			psmt.setInt(1, user_id);
+			psmt.setInt(2, product_id);
+			
+			psmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new AppException("dao.OrderDao.delItemFromShopcart");
+		} finally {
+			DBUtil.closeStatement(psmt);
+			DBUtil.closeConnection(conn);
+		}
+	}
 }

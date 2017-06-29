@@ -425,4 +425,42 @@ public class OrderDao {
 		return true;
 	}
 	
+	/**
+	 * 获取购物车中商品种树
+	 * @param user_id
+	 * @return
+	 * @throws AppException
+	 */
+	public int getProNumOfShopcart(int user_id) throws AppException{
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+
+		int num=0;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select count(*) as n"
+					+ "from shopcart"
+					+ "where user_id = ?"; 
+			
+			psmt = conn.prepareStatement(sql);
+			
+			psmt.setInt(1, user_id);
+			
+			rs=psmt.executeQuery();
+			
+			if(rs.next()){
+				num=rs.getInt("n");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new AppException("dao.OrderDao.getProNumOfShopcart");
+		} finally {
+			DBUtil.closeResultSet(rs);
+			DBUtil.closeStatement(psmt);
+			DBUtil.closeConnection(conn);
+		}
+		return num;
+	}
 }

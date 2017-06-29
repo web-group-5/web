@@ -57,6 +57,24 @@ public class ProductService {
 	}
 	
 	/**
+	 * 通过商品id获取所属商品
+	 * @param shop_id
+	 * @return
+	 * @throws AppException
+	 */
+	public Product getProductById(int id) throws AppException{
+		try {
+			Product product=productDao.getById(id);
+			return product;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException("dao.ProductService.getProductsByShopId");
+		}
+		
+	}
+	
+	/**
 	 * 通过商品种类获取商品集
 	 * @param variety
 	 * @return
@@ -163,6 +181,22 @@ public class ProductService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException("dao.ProductService.getCollection");
+		}
+	}
+	
+	/**
+	 * 删除受收藏夹
+	 * @param user_id
+	 * @param product_id
+	 * @throws AppException
+	 */
+	public void delCollection(int user_id,int product_id) throws AppException{
+		try {
+			productDao.delCollection(user_id, product_id);
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException("dao.ProductService.delCollection");
 		}
 	}
 }

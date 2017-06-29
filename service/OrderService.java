@@ -238,4 +238,21 @@ public class OrderService {
 		}
 	} 
 
+	/**
+	 * 获取购物车中商品种树
+	 * @param user_id
+	 * @return
+	 * @throws AppException
+	 */
+	public int getProNumOfShopcart(int user_id) throws AppException{
+		int num=0;
+		try {
+			num=orderDao.getProNumOfShopcart(user_id);
+			return num;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException("service.OrderService.getProNumOfShopcart");
+		}
+	}
 }

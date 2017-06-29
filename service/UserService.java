@@ -25,7 +25,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.isExist_account");
+					"service.UserService.isExist_account");
 		}
 		return flag;
 	}
@@ -44,7 +44,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.isExist_nickname");
+					"service.UserService.isExist_nickname");
 		}
 		return flag;
 	}
@@ -69,7 +69,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.register");
+					"service.UserService.register");
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.login");
+					"service.UserService.login");
 		}
 	}
 	
@@ -108,7 +108,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.canPay");
+					"service.UserService.canPay");
 		}
 		
 	}
@@ -128,7 +128,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.getInfoById");
+					"service.UserService.getInfoById");
 		}
 	}
 	
@@ -149,7 +149,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.charge");
+					"service.UserService.charge");
 		}
 		return -1;
 	}
@@ -171,7 +171,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.expense");
+					"service.UserService.expense");
 		}
 		return -1;
 	}
@@ -190,7 +190,7 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.updateLogin_Password");
+					"service.UserService.updateLogin_Password");
 		}
 	}
 	
@@ -208,7 +208,26 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"dao.UserService.updatePay_Password");
+					"service.UserService.updatePay_Password");
+		}
+	}
+	
+	/**
+	 * 更新用户基本信息
+	 * name,sex,birthday,phone,email,address,nickname
+	 * @param user
+	 * @return
+	 * @throws AppException
+	 */
+	public boolean updateUserInfo(User user) throws AppException{
+		try {
+			userDao.UpdateUserInfo(user);
+			return true;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException(
+					"service.UserService.updateLogin_Password");
 		}
 	}
 }

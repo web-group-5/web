@@ -25,7 +25,7 @@ public class User {
 		login_password="";
 		pay_password="";
 		sex="";
-		birthday=null;
+		birthday=new Date(0);
 		phone="";
 		email="";
 		address="";
