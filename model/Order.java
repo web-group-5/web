@@ -1,17 +1,18 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
 	private int id;
-	private int customer_id;
-	private int total_price;
+	private int user_id;
+	private float total_price;
 	private boolean isPay;
-	private ArrayList<OrderItem> orders;
+	private List<OrderItem> orderItems;
 	
 	public Order(){
 		id=0;
-		customer_id=0;
+		user_id=0;
 		total_price=0;
 		isPay=false;
 	}
@@ -24,20 +25,20 @@ public class Order {
 		this.id=id;
 	}
 	
-	public int getCustomer_id(){
-		return customer_id;
+	public int getUser_id(){
+		return user_id;
 	}
 	
-	public void SetCustomer_id(int customer_id){
-		this.customer_id=customer_id;
+	public void SetUser_id(int user_id){
+		this.user_id=user_id;
 	}
 	
-	public int getTotal_price(){
+	public float getTotal_price(){
 		return total_price;
 	}
 	
-	public void addPrice(int price){
-		this.total_price+=price;
+	public void setPrice(float total_price){
+		this.total_price=total_price;
 	}
 	
 	public boolean getIsPay(){
@@ -48,11 +49,11 @@ public class Order {
 		this.isPay=isPay;
 	}
 	
-	public ArrayList<OrderItem> getOrders(){
-		return orders;
+	public List<OrderItem> getOrderItems(){
+		return orderItems;
 	}
 	
-	public void addOrders(OrderItem orderItem){
-		orders.add(orderItem);
+	public void setOrderItems(List<OrderItem> list){
+		this.orderItems=list;
 	}
 }

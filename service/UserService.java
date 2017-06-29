@@ -176,5 +176,39 @@ public class UserService {
 		return -1;
 	}
 	
+	/**
+	 * 更新登录密码
+	 * @param user
+	 * @return
+	 * @throws AppException
+	 */
+	public boolean updateLogin_Password(User user) throws AppException{
+		try {
+			userDao.UpdateLogin_Password(user);
+			return true;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException(
+					"dao.UserService.updateLogin_Password");
+		}
+	}
 	
+	/**
+	 * 更新支付密码
+	 * @param user
+	 * @return
+	 * @throws AppException
+	 */
+	public boolean updatePay_Password(User user) throws AppException{
+		try {
+			userDao.UpdatePay_Password(user);
+			return true;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException(
+					"dao.UserService.updatePay_Password");
+		}
+	}
 }
