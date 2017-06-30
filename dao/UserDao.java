@@ -187,8 +187,8 @@ public class UserDao {
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select *"
-					+"from user"
+			String sql = "select * "
+					+"from user "
 					+"where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
@@ -222,15 +222,16 @@ public class UserDao {
 		return user;
 	}
 	
-	public int getBalanceById(int id) throws AppException {
+	public float getBalanceById(int id) throws AppException {
 		Connection conn = null;
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select balance"
-					+"from user"
-					+"where id = ?";
+			String sql = "select balance "
+					+"from user "
+					+"where id = ? ";
+			
 			
 			psmt = conn.prepareStatement(sql);
 			
@@ -240,7 +241,7 @@ public class UserDao {
 			
 			
 			if (rs.next()) {
-				return rs.getInt("balance");
+				return rs.getFloat("balance");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -306,7 +307,7 @@ public class UserDao {
 		try {
 			conn = DBUtil.getConnection();
 			String sql = "update user set name = ?,sex = ?,birthday = ?,phone = ?,"
-					+ "email = ?,address = ?,nickname=?"
+					+ "email = ?,address = ?,nickname=? "
 					+ "where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
@@ -339,20 +340,20 @@ public class UserDao {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean UpdateLogin_Password(User user) throws AppException {
+	public boolean UpdateLogin_Password(int id,String login_password) throws AppException {
 		boolean flag = false;
 		Connection conn = null;
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update user set login_password = ?"
+			String sql = "update user set login_password = ? "
 					+ "where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
 			
-			psmt.setString(1, user.getLogin_Password());
-			psmt.setInt(2, user.getId());
+			psmt.setString(1, login_password);
+			psmt.setInt(2, id);
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {
@@ -366,20 +367,20 @@ public class UserDao {
 		return true;
 	}
 	
-	public boolean UpdatePay_Password(User user) throws AppException {
+	public boolean UpdatePay_Password(int id,String pay_password) throws AppException {
 		boolean flag = false;
 		Connection conn = null;
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update user set pay_password = ?"
+			String sql = "update user set pay_password = ? "
 					+ "where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
 			
-			psmt.setString(1, user.getPay_Password());
-			psmt.setInt(2, user.getId());
+			psmt.setString(1, pay_password);
+			psmt.setInt(2, id);
 			
 			flag = psmt.execute();
 		} catch (SQLException e) {
@@ -407,7 +408,7 @@ public class UserDao {
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update user set balance += ?"
+			String sql = "update user set balance = balance + ? "
 					+ "where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
@@ -441,7 +442,7 @@ public class UserDao {
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update user set balance -= ?"
+			String sql = "update user set balance = balance - ? "
 					+ "where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
@@ -491,6 +492,36 @@ public class UserDao {
 		return flag;
 	}
 	
+	public boolean IsLogin_Password(int id,String login_password) throws AppException{
+		Connection conn = null; 
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+
+		boolean flag = false;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "select login_password from user where id = ?";
+
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, id);
+
+			rs = psmt.executeQuery();
+			if (rs.next()) {
+				if(rs.getString("login_password").equals(login_password))
+				    flag = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new AppException(
+					"dao.UserDao.IsLogin_Password");
+		} finally {
+			DBUtil.closeResultSet(rs);
+			DBUtil.closeStatement(psmt);
+			DBUtil.closeConnection(conn);
+		}
+		return flag;
+	}
+	
 	public boolean OpenShop(int id) throws AppException{
 		boolean flag = false;
 		Connection conn = null;
@@ -498,7 +529,7 @@ public class UserDao {
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update user set isShoper = true"
+			String sql = "update user set isShoper = true "
 					+ "where id = ?";
 			
 			psmt = conn.prepareStatement(sql);

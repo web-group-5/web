@@ -3,7 +3,6 @@ package model;
 public class Product {
 	private int id;
 	private int shop_id;
-	private String num;
 	private String name;
 	private String description;
 	private float price;
@@ -16,7 +15,6 @@ public class Product {
 		id=0;
 		shop_id=0;
 		name="";
-		num="";
 		description="";
 		price=0;
 		quantity=0;
@@ -47,14 +45,6 @@ public class Product {
 	
 	public void setName(String name){
 		this.name=name;
-	}
-	
-	public String getNum(){
-		return num;
-	}
-	
-	public void setNum(String num){
-		this.num=num;
 	}
 	
 	public String getDescription(){

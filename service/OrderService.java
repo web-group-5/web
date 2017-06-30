@@ -55,7 +55,7 @@ public class OrderService {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean generateOrder(int user_id) throws AppException{
+	public int generateOrder(int user_id) throws AppException{
 		try {
 			List<OrderItem> orderItems=orderDao.getItemsFromShopcart(user_id);  //获取购物车信息，得到一组购物车商品项
 			float total_price=countOrderPrice(orderItems); //计算订单总价
@@ -68,13 +68,37 @@ public class OrderService {
 			
 			//清空购物车
 			orderDao.delItemsFromShopcart(user_id);
-			
+			return order_id;
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException("service.OrderService.generateOrder");
 		}
-		return true;
+	}
+	
+	/**
+	 * 立即生成订单
+	 * @param user_id
+	 * @param product_id
+	 * @param quantity
+	 * @return
+	 * @throws AppException
+	 */
+	public int generateOrder(int user_id,int product_id,int quantity) throws AppException{
+		try {
+			int order_id=orderDao.generateOrder(user_id, productDao.getPriceById(product_id)*quantity); //生成订单号
+			
+			OrderItem orderItem=new OrderItem();
+			orderItem.setProduct_id(product_id);
+			orderItem.setQuantity(quantity);
+			orderDao.addToOrderDetail(order_id, orderItem);
+
+			return order_id;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException("service.OrderService.generateOrder");
+		}
 	}
 	
 	/**
@@ -84,18 +108,14 @@ public class OrderService {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean achieveOrder(Order order) throws AppException{
+	public boolean achieveOrder(int order_id) throws AppException{
 		try {
-			/**
-			 * 订单状态设置
-			 */
-			orderDao.achieveOrder(order);
-			
+			Order order=getOrder(order_id);
 			/**
 			 * 结款
 			 */
 			//买家
-			if(userDao.getById(order.getUser_id()).getBalance()>=order.getTotal_price())
+			if(userDao.getBalanceById(order.getUser_id())>=order.getTotal_price())
 				userDao.Expense(order.getUser_id(), order.getTotal_price());
 			else
 				return false;
@@ -115,11 +135,20 @@ public class OrderService {
 					int Value=orderItem.getQuantity()*productDao.getPriceById(orderItem.getProduct_id());
 					map.put(user_id, Value);
 				}
+				
+				//商品数量结算
+				productDao.changeProNum(orderItem.getProduct_id(), orderItem.getQuantity());
 			}
 			//卖家遍历收钱
 			for (Map.Entry<Integer, Integer> entry : map.entrySet()) {  
 				userDao.Charge(entry.getKey(), entry.getValue());  
 			}  
+			
+			
+			/**
+			 * 订单状态设置
+			 */
+			orderDao.achieveOrder(order);
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,7 +181,7 @@ public class OrderService {
 	 * @return
 	 * @throws AppException
 	 */
-	public List<Order> getOrderS(int user_id) throws AppException{
+	public List<Order> getOrders(int user_id) throws AppException{
 		List<Integer> orderids=new ArrayList<Integer>();
 		List<Order> orders=new ArrayList<Order>();
 		orderids=orderDao.getOrderIds(user_id);
@@ -165,7 +194,18 @@ public class OrderService {
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new AppException("service.OrderService.getOrderS");
+			throw new AppException("service.OrderService.getOrders");
+		}
+	}
+	
+	public Order getOrder(int order_id) throws AppException{
+		try {
+				Order order=orderDao.getOrder(order_id);
+				return order;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException("service.OrderService.getOrder");
 		}
 	}
 	
@@ -226,10 +266,9 @@ public class OrderService {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean updateShopcart(List<OrderItem> orderItems) throws AppException{
+	public boolean updateShopcart(OrderItem orderItem) throws AppException{
 		try {
-			for(OrderItem orderItem:orderItems)
-			    orderDao.updateShopcart(orderItem);
+			orderDao.updateShopcart(orderItem);
 			return true;
 		} catch (AppException e) {
 			// TODO Auto-generated catch block

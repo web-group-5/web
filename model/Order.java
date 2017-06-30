@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,14 +8,16 @@ public class Order {
 	private int id;
 	private int user_id;
 	private float total_price;
-	private boolean isPay;
+	private String status;
+	private Timestamp TradeTime;
 	private List<OrderItem> orderItems;
 	
 	public Order(){
 		id=0;
 		user_id=0;
 		total_price=0;
-		isPay=false;
+		status="";
+		TradeTime=null;
 	}
 	
 	public int getId(){
@@ -41,12 +44,20 @@ public class Order {
 		this.total_price=total_price;
 	}
 	
-	public boolean getIsPay(){
-		return isPay;
+	public String getStatus(){
+		return status;
 	}
 	
-	public void setIsPay(boolean isPay){
-		this.isPay=isPay;
+	public void setStatus(String status){
+		this.status=status;
+	}
+	
+	public Timestamp getTradeTime(){
+		return TradeTime;
+	}
+	
+	public void setTradeTime(Timestamp TradeTime){
+		this.TradeTime=TradeTime;
 	}
 	
 	public List<OrderItem> getOrderItems(){

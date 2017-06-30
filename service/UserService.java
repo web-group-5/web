@@ -99,7 +99,7 @@ public class UserService {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean canPay(int id,String pay_password) throws AppException{
+	public boolean judgePay_password(int id,String pay_password) throws AppException{
 		boolean flag=false;
 		try {
 			flag=userDao.IsPay_Password(id, pay_password);
@@ -108,7 +108,20 @@ public class UserService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new AppException(
-					"service.UserService.canPay");
+					"service.UserService.judgePay_password");
+		}
+	}
+	
+	public boolean judgeLogin_password(int id,String login_password) throws AppException{
+		boolean flag=false;
+		try {
+			flag=userDao.IsLogin_Password(id, login_password);
+			return flag;
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new AppException(
+					"service.UserService.judgeLogin_password");
 		}
 		
 	}
@@ -143,7 +156,8 @@ public class UserService {
 		try {
 			if(userDao.Charge(id, money))
 			{
-				return userDao.getBalanceById(id);
+				float balance=userDao.getBalanceById(id);
+				return balance;
 			}
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
@@ -182,10 +196,15 @@ public class UserService {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean updateLogin_Password(User user) throws AppException{
+	public boolean updateLogin_Password(int id,String old_password,String new_password) throws AppException{
 		try {
-			userDao.UpdateLogin_Password(user);
-			return true;
+			if(judgeLogin_password(id, old_password))
+			{
+				userDao.UpdateLogin_Password(id,new_password);
+				return true;
+			}else
+				return false;
+			
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -200,10 +219,15 @@ public class UserService {
 	 * @return
 	 * @throws AppException
 	 */
-	public boolean updatePay_Password(User user) throws AppException{
+	public boolean updatePay_Password(int id,String old_password,String new_password) throws AppException{
 		try {
-			userDao.UpdatePay_Password(user);
-			return true;
+			if(judgePay_password(id, old_password))
+			{
+				userDao.UpdatePay_Password(id,new_password);
+				return true;
+			}else
+				return false;
+			
 		} catch (AppException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

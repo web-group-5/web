@@ -24,8 +24,8 @@ public class ShopDao {
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select user_id"
-					+"from shop"
+			String sql = "select user_id "
+					+"from shop "
 					+"where id = ?";
 			
 			psmt = conn.prepareStatement(sql);
@@ -36,7 +36,7 @@ public class ShopDao {
 			
 			
 			if (rs.next()) {
-				user_id=rs.getInt("id");
+				user_id=rs.getInt("user_id");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

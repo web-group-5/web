@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class OrderDao {
 		PreparedStatement psmt = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update shopcart set quantity = ?"
+			String sql = "update shopcart set quantity = ? "
 					+ "where user_id = ? and product_id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -93,7 +94,7 @@ public class OrderDao {
 		PreparedStatement psmt = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "delete from shopcart"
+			String sql = "delete from shopcart "
 					+ "where user_id = ? and product_id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -123,7 +124,7 @@ public class OrderDao {
 		PreparedStatement psmt = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "delete from shopcart"
+			String sql = "delete from shopcart "
 					+ "where user_id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -157,7 +158,7 @@ public class OrderDao {
 		List<OrderItem> orderItems=new ArrayList<OrderItem>();
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select * from shopcart"
+			String sql = "select * from shopcart "
 					+ "where user_id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -206,7 +207,7 @@ public class OrderDao {
 		List<OrderItem> orderItems=new ArrayList<OrderItem>();
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select * from orderDetail"
+			String sql = "select * from orderDetail "
 					+ "where orders_id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -257,7 +258,7 @@ public class OrderDao {
 			String sql = "insert into orders (user_id,total_price,status)"
 					+ " values (?,?,?)";
 			
-			psmt = conn.prepareStatement(sql); 
+			psmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS); 
 			
 			psmt.setInt(1, user_id);
 			psmt.setFloat(2, total_price);
@@ -328,7 +329,7 @@ public class OrderDao {
 		List<Integer> ids=new ArrayList<Integer>();
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select id from orders"
+			String sql = "select id from orders "
 					+ "where user_id = ? and status = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -366,7 +367,7 @@ public class OrderDao {
 		Order order=new Order();
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select * from orders"
+			String sql = "select * from orders "
 					+ "where id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -379,6 +380,12 @@ public class OrderDao {
 				order.setId(order_id);
 				order.SetUser_id(rs.getInt("user_id"));
 				order.setPrice(rs.getFloat("total_price"));
+				if(rs.getInt("status")==Constant.ORDERSTATUS_UNDO){
+					order.setStatus("Î´¸¶¿î");
+				}else {
+					order.setStatus("ÒÑ¸¶¿î");
+				}
+				order.setTradeTime(rs.getTimestamp("TradeTime"));
 			}
 			
 			order.setOrderItems(getItemsFromOrderDetail(order_id));
@@ -406,7 +413,7 @@ public class OrderDao {
 		PreparedStatement psmt = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "update orders set status = ?"
+			String sql = "update orders set status = ?,TradeTime = now() "
 					+ "where user_id = ? and id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
@@ -439,8 +446,8 @@ public class OrderDao {
 		int num=0;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select count(*) as n"
-					+ "from shopcart"
+			String sql = "select count(*) as n "
+					+ "from shopcart "
 					+ "where user_id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
