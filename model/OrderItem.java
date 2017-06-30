@@ -4,6 +4,7 @@ public class OrderItem {
 	private int order_id;   //订单id
 	private int user_id;    //买家id
 	private int product_id; //商品id
+	private String name;
 	private String description;
 	private float price;
 	private String image;
@@ -54,6 +55,14 @@ public class OrderItem {
 	
 	public void setDescription(String description){
 		this.description=description;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public void setName(String name){
+		this.name=name;
 	}
 	
 	public String getImage(){

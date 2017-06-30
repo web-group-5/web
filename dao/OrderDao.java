@@ -176,6 +176,7 @@ public class OrderDao {
 				orderItem.setDescription(product.getDescription());
 				orderItem.setPrice(product.getPrice());
 				orderItem.setImage(product.getImage());
+				orderItem.setName(product.getName());
 				
 				orderItems.add(orderItem);
 			}
@@ -225,6 +226,7 @@ public class OrderDao {
 				orderItem.setDescription(product.getDescription());
 				orderItem.setPrice(product.getPrice());
 				orderItem.setImage(product.getImage());
+				orderItem.setName(product.getName());
 				
 				orderItems.add(orderItem);
 			}
@@ -330,12 +332,11 @@ public class OrderDao {
 		try {
 			conn = DBUtil.getConnection();
 			String sql = "select id from orders "
-					+ "where user_id = ? and status = ?"; 
+					+ "where user_id = ?"; 
 			
 			psmt = conn.prepareStatement(sql);
 			
 			psmt.setInt(1, user_id);
-			psmt.setInt(2, Constant.ORDERSTATUS_UNDO);
 			
 			rs=psmt.executeQuery();
 			
