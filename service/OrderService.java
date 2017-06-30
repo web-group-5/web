@@ -1,5 +1,8 @@
 package service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,7 @@ import model.Order;
 import model.OrderItem;
 import model.Product;
 import utils.AppException;
+import utils.DBUtil;
 
 public class OrderService {
 	private OrderDao orderDao=null;
@@ -293,5 +297,16 @@ public class OrderService {
 			e.printStackTrace();
 			throw new AppException("service.OrderService.getProNumOfShopcart");
 		}
+	}
+	
+	public boolean delOrder(int order_id) throws AppException{
+		try {
+			orderDao.delOrderDetails(order_id);
+			orderDao.delOrder(order_id);
+		} catch (AppException e) {
+			e.printStackTrace();
+			throw new AppException("dao.OrderService.delOrder");
+		}
+		return true;
 	}
 }

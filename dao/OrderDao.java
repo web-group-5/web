@@ -471,4 +471,50 @@ public class OrderDao {
 		}
 		return num;
 	}
+	
+	public boolean delOrder(int order_id) throws AppException{
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "delete from orders "
+					+ "where id = ?"; 
+			
+			psmt = conn.prepareStatement(sql);
+			
+			psmt.setInt(1, order_id);
+			
+			psmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new AppException("dao.OrderDao.delOrder");
+		} finally {
+			DBUtil.closeStatement(psmt);
+			DBUtil.closeConnection(conn);
+		}
+		return true;
+	}
+	
+	public boolean delOrderDetails(int order_id) throws AppException{
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "delete from orderdetail "
+					+ "where orders_id = ?"; 
+			
+			psmt = conn.prepareStatement(sql);
+			
+			psmt.setInt(1, order_id);
+			
+			psmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new AppException("dao.OrderDao.delOrderDetails");
+		} finally {
+			DBUtil.closeStatement(psmt);
+			DBUtil.closeConnection(conn);
+		}
+		return true;
+	}
 }
